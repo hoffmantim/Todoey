@@ -14,15 +14,14 @@ class TodoListViewController: UITableViewController {
     
     let defaults = UserDefaults.standard
     
-    
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
        
-        
-        
+        loadItems()
         
     }
 
@@ -55,9 +54,7 @@ class TodoListViewController: UITableViewController {
         
         itemArray[indexPath.row].isDone = !itemArray[indexPath.row].isDone
         
-        
-        
-        tableView.reloadData()
+        saveItems()
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -78,9 +75,9 @@ class TodoListViewController: UITableViewController {
             newItem.title = textField.text!
             
             self.itemArray.append(newItem)
-    
             
-            self.tableView.reloadData()
+            self.saveItems()
+            
         }
         
         alert.addTextField { (alertTextfield) in
@@ -95,7 +92,31 @@ class TodoListViewController: UITableViewController {
         
     }
     
-   
+    func saveItems() {
+        let encoder = PropertyListEncoder()
+        
+        do {
+            let data = try encoder.encode(itemArray)
+            try data.write(to: dataFilePath!)
+        } catch {
+            print("Error writing to plist \(error)")
+        }
+        
+        self.tableView.reloadData()
+    }
+    
+    func loadItems() {
+        if let data = try? Data(contentsOf: dataFilePath!) {
+            let decoder = PropertyListDecoder()
+            do {
+                itemArray = try decoder.decode([Item].self, from: data)
+            } catch {
+                print("Error retrieving data from plist \(error)")
+            }
+            
+            
+        }
+    }
     
 }
 
