@@ -14,6 +14,8 @@ class CategoryViewController: UITableViewController {
     
     var categoryArray = [Category]()
 
+    
+     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     
@@ -45,6 +47,23 @@ class CategoryViewController: UITableViewController {
         return categoryArray.count
     }
 
+    //MARK: Tableview Delegate Methods
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "goToItems", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        let destinationVC = segue.destination as! TodoListViewController
+        
+        if let indexPath = tableView.indexPathForSelectedRow {
+            destinationVC.selectedCategory = categoryArray[indexPath.row]
+        }
+        
+        
+        
+    }
     
     
     //MARK: Add New Categories
@@ -77,7 +96,10 @@ class CategoryViewController: UITableViewController {
         
     }
     
+
+
     
+    //MARK: Data Manipulation Methods
     func saveCategories() {
         
         do {
@@ -100,14 +122,5 @@ class CategoryViewController: UITableViewController {
         
         tableView.reloadData()
     }
-    
-    
-    
-    //MARK: Tableview Data Source Methods
-    
-    //MARK: Tableview Delegate Methods
-    
-    //MARK: Data Manipulation Methods
-    
     
 }
