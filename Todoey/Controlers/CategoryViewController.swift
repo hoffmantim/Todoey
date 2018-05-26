@@ -61,8 +61,6 @@ class CategoryViewController: UITableViewController {
             destinationVC.selectedCategory = categoryArray[indexPath.row]
         }
         
-        
-        
     }
     
     
